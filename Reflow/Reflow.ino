@@ -16,7 +16,8 @@ void setup() {
 void loop() {
   unsigned int thermocouple; // 14-Bit Thermocouple Temperature Data + 2-Bit
   unsigned int internal; // 12-Bit Internal Temperature Data + 4-Bit
-  float disp; // display value
+  float tmp;
+  float tmpInternal; // display value
 
   delay(500);
   digitalWrite(SLAVE, LOW);                             //  Enable the chip
@@ -41,29 +42,29 @@ void loop() {
   {
     if((thermocouple & 0x8000) == 0)
     { // 0℃以上   above 0 Degrees Celsius
-      disp = (thermocouple >> 2) * 0.25;
+      tmp = (thermocouple >> 2) * 0.25;
     }
     else
     { // 0℃未満   below zero
-      disp = (0x3fff - (thermocouple >> 2) + 1)  * -0.25;
+      tmp = (0x3fff - (thermocouple >> 2) + 1)  * -0.25;
     }
     Serial.print(thermocouple, HEX);
     Serial.print(" : ");
-    Serial.print(disp);
+    Serial.print(tmp);
 
     Serial.print(" // ");
 
     if((internal & 0x8000) == 0)
     { // 0℃以上   above 0 Degrees Celsius
-      disp = (internal >> 4) * 0.0625;
+      tmpInternal = (internal >> 4) * 0.0625;
     }
     else
     { // 0℃未満   below zero
-      disp = (((0xffff - internal) >> 4) + 1)  * -0.0625;
+      tmpInternal = (((0xffff - internal) >> 4) + 1)  * -0.0625;
     }
     Serial.print(internal, HEX);
     Serial.print(" : ");
-    Serial.print(disp);
+    Serial.print(tmpInternal);
 
     Serial.println();
   }
