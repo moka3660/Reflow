@@ -2,7 +2,8 @@
 
 #define SLAVE 10
 
-void setup() {
+void setup()
+{
   pinMode(SLAVE, OUTPUT);
   digitalWrite(SLAVE, HIGH);
 
@@ -13,7 +14,8 @@ void setup() {
   SPI.setDataMode(SPI_MODE0);
 }
 
-void loop() {
+void loop()
+{
   unsigned int thermocouple; // 14-Bit Thermocouple Temperature Data + 2-Bit
   unsigned int internal; // 12-Bit Internal Temperature Data + 4-Bit
   float tmp;
