@@ -2,6 +2,9 @@
 
 #define SLAVE 10
 
+#define TOP 5 //Heater Top
+#define BOTTOM 6 //Heater Bottom
+
 void setup()
 {
   pinMode(SLAVE, OUTPUT);
@@ -18,7 +21,7 @@ void loop()
 {
   unsigned int thermocouple; // 14-Bit Thermocouple Temperature Data + 2-Bit
   unsigned int internal; // 12-Bit Internal Temperature Data + 4-Bit
-  float tmp;
+  float tmpFurnace;
   float tmpInternal; // display value
 
   delay(500);
@@ -44,15 +47,15 @@ void loop()
   {
     if((thermocouple & 0x8000) == 0)
     { // 0℃以上   above 0 Degrees Celsius
-      tmp = (thermocouple >> 2) * 0.25;
+      tmpFurnace = (thermocouple >> 2) * 0.25;
     }
     else
     { // 0℃未満   below zero
-      tmp = (0x3fff - (thermocouple >> 2) + 1)  * -0.25;
+      tmpFurnace = (0x3fff - (thermocouple >> 2) + 1)  * -0.25;
     }
     Serial.print(thermocouple, HEX);
     Serial.print(" : ");
-    Serial.print(tmp);
+    Serial.print(tmpFurnace);
 
     Serial.print(" // ");
 
