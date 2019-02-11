@@ -19,6 +19,28 @@ void setup()
 
 void loop()
 {
+  float TmpFurnace;
+  TmpFurnace = gettmp();
+
+    if(TmpFurnace <= 180)
+    {
+      analogWrite(TOP,255);
+      analogWrite(BOTTOM,255);
+    }
+    else if(TmpFurnace <= 195)
+    {
+      analogWrite(TOP,255);
+      analogWrite(BOTTOM,0);
+    }
+    else
+    {
+      analogWrite(TOP,0);
+      analogWrite(BOTTOM,0);
+    }
+}
+
+float gettmp(void)
+{
   unsigned int thermocouple; // 14-Bit Thermocouple Temperature Data + 2-Bit
   unsigned int internal; // 12-Bit Internal Temperature Data + 4-Bit
   float tmpFurnace;
@@ -73,20 +95,6 @@ void loop()
 
     Serial.println();
 
-    if(tmpFurnace <= 180)
-    {
-      analogWrite(TOP,255);
-      analogWrite(BOTTOM,255);
-    }
-    else if(tmpFurnace <= 195)
-    {
-      analogWrite(TOP,255);
-      analogWrite(BOTTOM,0);
-    }
-    else// if(195 < tmpFurnace)
-    {
-      analogWrite(TOP,0);
-      analogWrite(BOTTOM,0);
-    }
+    return(tmpFurnace);
   }
 }
