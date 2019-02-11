@@ -19,32 +19,15 @@ void setup()
 
 void loop()
 {
-  float TmpFurnace;
-  TmpFurnace = gettmp();
-
-    if(TmpFurnace <= 180)
-    {
-      analogWrite(TOP,255);
-      analogWrite(BOTTOM,255);
-    }
-    else if(TmpFurnace <= 195)
-    {
-      analogWrite(TOP,255);
-      analogWrite(BOTTOM,0);
-    }
-    else
-    {
-      analogWrite(TOP,0);
-      analogWrite(BOTTOM,0);
-    }
+  initialheat(200, 30000);
 }
 
 float gettmp(void)
 {
   unsigned int thermocouple; // 14-Bit Thermocouple Temperature Data + 2-Bit
   unsigned int internal; // 12-Bit Internal Temperature Data + 4-Bit
-  float tmpFurnace;
-  float tmpInternal; // display value
+  float Furnace;
+  float Internal; // display value
 
   delay(500);
   digitalWrite(SLAVE, LOW);                             //  Enable the chip
@@ -69,32 +52,75 @@ float gettmp(void)
   {
     if((thermocouple & 0x8000) == 0)
     { // 0℃以上   above 0 Degrees Celsius
-      tmpFurnace = (thermocouple >> 2) * 0.25;
+      Furnace = (thermocouple >> 2) * 0.25;
     }
     else
     { // 0℃未満   below zero
-      tmpFurnace = (0x3fff - (thermocouple >> 2) + 1)  * -0.25;
+      Furnace = (0x3fff - (thermocouple >> 2) + 1)  * -0.25;
     }
     Serial.print(thermocouple, HEX);
     Serial.print(" : ");
-    Serial.print(tmpFurnace);
+    Serial.print(Furnace);
 
     Serial.print(" // ");
 
     if((internal & 0x8000) == 0)
     { // 0℃以上   above 0 Degrees Celsius
-      tmpInternal = (internal >> 4) * 0.0625;
+      Internal = (internal >> 4) * 0.0625;
     }
     else
     { // 0℃未満   below zero
-      tmpInternal = (((0xffff - internal) >> 4) + 1)  * -0.0625;
+      Internal = (((0xffff - internal) >> 4) + 1)  * -0.0625;
     }
     Serial.print(internal, HEX);
     Serial.print(" : ");
-    Serial.print(tmpInternal);
+    Serial.print(Internal);
 
     Serial.println();
 
-    return(tmpFurnace);
+    return(Furnace);
   }
+}
+
+void initialheat(float tmpTarget, unsigned long timeRetention)
+{
+  float tmpFurnace;
+  tmpFurnace = gettmp();
+  boolean heating = true; //  加熱中:true，冷却中:false
+
+  while(1)  //加熱
+  {
+    analogWrite(TOP,255);
+    analogWrite(BOTTOM,255);   
+    tmpFurnace = gettmp();
+    if(tmpTarget <= tmpFurnace)
+    {
+      analogWrite(TOP,0);
+      analogWrite(BOTTOM,0);
+      heating =false;
+      break;
+    }
+  }
+
+  unsigned long retstart;
+  retstart = millis();
+
+  while((millis() - retstart) < timeRetention)//保温  //while脱出不具合あり
+  {
+    tmpFurnace = gettmp();
+    if(tmpFurnace <= tmpTarget)
+    {
+      analogWrite(TOP,255);
+      analogWrite(BOTTOM,255);
+      delay(100);
+    }
+    else
+    {
+      analogWrite(TOP,0);
+      analogWrite(BOTTOM,0);
+      delay(100);
+    }
+  }
+  analogWrite(TOP,0);
+  analogWrite(BOTTOM,0);
 }
