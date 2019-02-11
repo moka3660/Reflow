@@ -72,5 +72,21 @@ void loop()
     Serial.print(tmpInternal);
 
     Serial.println();
+
+    if(tmpFurnace <= 180)
+    {
+      analogWrite(TOP,255);
+      analogWrite(BOTTOM,255);
+    }
+    else if(tmpFurnace <= 195)
+    {
+      analogWrite(TOP,255);
+      analogWrite(BOTTOM,0);
+    }
+    else// if(195 < tmpFurnace)
+    {
+      analogWrite(TOP,0);
+      analogWrite(BOTTOM,0);
+    }
   }
 }
