@@ -15,11 +15,14 @@ void setup()
   SPI.setBitOrder(MSBFIRST);
   SPI.setClockDivider(SPI_CLOCK_DIV4);
   SPI.setDataMode(SPI_MODE0);
+
+  initialheat(200, 30000);
 }
 
 void loop()
 {
-  initialheat(200, 30000);
+  gettmp();
+  delay(500);
 }
 
 float gettmp(void)
@@ -82,7 +85,7 @@ float gettmp(void)
   }
 }
 
-void initialheat(float tmpTarget, unsigned long timeRetention)
+void initialheat(float tmpTarget, int timeRetention)
 {
   float tmpFurnace;
   tmpFurnace = gettmp();
@@ -105,20 +108,20 @@ void initialheat(float tmpTarget, unsigned long timeRetention)
   unsigned long retstart;
   retstart = millis();
 
-  while((millis() - retstart) < timeRetention)//保温  //while脱出不具合あり
+  while(millis()-retstart < timeRetention)//保温
   {
     tmpFurnace = gettmp();
     if(tmpFurnace <= tmpTarget)
     {
       analogWrite(TOP,255);
       analogWrite(BOTTOM,255);
-      delay(100);
+      delay(10);
     }
     else
     {
       analogWrite(TOP,0);
       analogWrite(BOTTOM,0);
-      delay(100);
+      delay(10);
     }
   }
   analogWrite(TOP,0);
