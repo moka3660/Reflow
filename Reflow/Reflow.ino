@@ -16,7 +16,7 @@ void setup()
   SPI.setClockDivider(SPI_CLOCK_DIV4);
   SPI.setDataMode(SPI_MODE0);
 
-  initialheat(200, 30000);
+  initialheat(170, 30000);  //実動時:80sec(80000usec)
 }
 
 void loop()
