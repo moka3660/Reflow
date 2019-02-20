@@ -16,7 +16,7 @@ void setup()
   SPI.setClockDivider(SPI_CLOCK_DIV4);
   SPI.setDataMode(SPI_MODE0);
 
-  initialheat(170, 30000);  //実動時:80sec(80000usec)
+  initialheat(170, 80000);  //実動時:80sec(80000usec)
   Serial.println("Finish Heating!!");
   mainheat(240,30000);
   Serial.println("Finish Heating!!");
