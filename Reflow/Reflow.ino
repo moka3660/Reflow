@@ -171,7 +171,7 @@ void mainheat(float tmpTarget, int timeRetention)
     }
     else
     {
-      analogWrite(TOP, 90);
+      analogWrite(TOP, 95);
       analogWrite(BOTTOM, 50);
       delay(10);
     }
