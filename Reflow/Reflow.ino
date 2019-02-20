@@ -18,7 +18,7 @@ void setup()
 
   initialheat(170, 30000);  //実動時:80sec(80000usec)
   Serial.println("Finish Heating!!");
-  initialheat(240,30000);
+  mainheat(240,30000);
   Serial.println("Finish Heating!!");
 }
 
@@ -126,6 +126,56 @@ void initialheat(float tmpTarget, int timeRetention)
       analogWrite(BOTTOM,0);
       delay(10);
     }
+  }
+  analogWrite(TOP,0);
+  analogWrite(BOTTOM,0);
+}
+
+void mainheat(float tmpTarget, int timeRetention)
+{
+  float tmpFurnace;
+  tmpFurnace = gettmp();
+  boolean heating = true; //  加熱中:true，冷却中:false
+
+  while(1)  //加熱
+  {
+    analogWrite(TOP,255);
+    analogWrite(BOTTOM,255);   
+    tmpFurnace = gettmp();
+    if(tmpTarget-2 <= tmpFurnace)
+    {
+      analogWrite(TOP,0);
+      analogWrite(BOTTOM,0);
+      heating =false;
+      break;
+    }
+  }
+
+  unsigned long retstart;
+  retstart = millis();
+
+  while(millis()-retstart < timeRetention)//保温
+  {
+    tmpFurnace = gettmp();
+    if(tmpFurnace <= tmpTarget-2)
+    {
+      analogWrite(TOP,255);
+      analogWrite(BOTTOM,255);
+      delay(10);
+    }
+    else if(tmpFurnace <= tmpTarget)
+    {
+      analogWrite(TOP,150);
+      analogWrite(BOTTOM,100);
+      delay(10);
+    }
+    else
+    {
+      analogWrite(TOP, 0);
+      analogWrite(BOTTOM, 0);
+      delay(10);
+    }
+    
   }
   analogWrite(TOP,0);
   analogWrite(BOTTOM,0);
